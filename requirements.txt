@@ -1,0 +1,6 @@
+requests==2.26.0
+time==0.0.0
+base64==0.0.0
+hmac==0.0.0
+hashlib==0.0.0
+json==0.0.0
