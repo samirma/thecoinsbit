@@ -1,20 +1,7 @@
-import requests
-import time
-import base64
-import hmac
-import hashlib
+from coinsbit_api import CoinsBitApi
 import json
-import apiAccess
+import coinsbit_api
 
-
-# tickers
-api_path='/api/v1/account/balance'
-request={
-    "currency": "USDT",
-}
-response = apiAccess.authorise(api_path,request)
-
-buy_data= response.text
 
 
 def print_non_zero_currencies(json_string):
@@ -27,8 +14,11 @@ def print_non_zero_currencies(json_string):
         if available != '0':
             print(f'{currency}: {available}')
 
+api_key = "2ce70369fb64d2dd51107a0769e024aa"
+apisecret = "1fcaacdbc7ad7e0e291d6f8900530b2e"
 
+bot = CoinsBitApi(api_key, apisecret)
 
-print_non_zero_currencies(buy_data)
+print(bot.current_balances("USDT"))
 
-print(buy_data)
+print(bot.ticker("GNC_USDT"))
