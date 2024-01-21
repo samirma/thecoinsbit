@@ -17,6 +17,8 @@ class CoinsBitApi:
         #Current market endpoints
         self.CURRENT_ORDER_BOOK_ENDPOINT = '/api/v1/public/book'
         self.CURRENT_TICKER_ENDPOINT = '/api/v1/public/ticker'
+
+        self.MARKETS_ENDPOINT = '/api/v1/public/markets'
         
         self.CURRENT_BALANCES_ENDPOINT = "/api/v1/account/balances"
         self.CURRENT_BALANCE_ENDPOINT = "/api/v1/account/balance"
@@ -127,6 +129,10 @@ class CoinsBitApi:
             "market": currency_pair_code
         }
         return self.get(api_path = self.ORDERS_HISTORY_ENDPOINT, params = params)
+    
+
+    def markets(self):
+        return self.get(api_path = self.MARKETS_ENDPOINT, params = {})
     
     
     def orders_history(self, currency_pair_code: str):

@@ -47,18 +47,19 @@ def market_maker_bot(bid, ask, spread, base_balance, quote_balance, num_orders):
 
     return bid_orders, ask_orders
 
-# Example usage:
-bid = 100
-ask = 110
-spread = 2
-base_balance = 10
-quote_balance = 10
-num_orders = 3
+if __name__ == "__main__":
+    # Example usage:
+    bid = 100
+    ask = 110
+    spread = 2
+    base_balance = 10
+    quote_balance = 10
+    num_orders = 3
 
-bid_orders, ask_orders = market_maker_bot(bid, ask, spread, base_balance, quote_balance, num_orders)
-print(f"----")
-print(f"Bid Orders:\n", "\n".join(map(str, bid_orders)))
-print(f"bid {bid}")
-print(f"Ask Orders:\n", "\n".join(map(str, ask_orders)))
-print(f"ask {ask}")
+    bid_orders, ask_orders = market_maker_bot(bid, ask, spread, base_balance, quote_balance, num_orders)
+    print(f"----")
+    print(f"Bid Orders:\n", "\n".join(map(str, bid_orders)))
+    print(f"bid {bid}")
+    print(f"Ask Orders:\n", "\n".join(map(str, ask_orders)))
+    print(f"ask {ask}")
 

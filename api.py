@@ -17,6 +17,14 @@ apisecret = "1fcaacdbc7ad7e0e291d6f8900530b2e"
 
 bot = CoinsBitApi(api_key, apisecret)
 
+market = "GNC_USDT"
+
+market_result = bot.markets()["result"]
+
+for item in market_result:
+    if item['name'] == market:
+        print(item)
+
 print(bot.current_balances("USDT")["result"]["USDT"]["available"])
 print(bot.current_balances("GNC")["result"]["GNC"]["available"])
 

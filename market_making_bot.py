@@ -1,38 +1,44 @@
 import argparse
-from CoinsBitApi import CoinsBitApi
+from coinsbit_api import CoinsBitApi
+from orders_creator import *
 
 class MarketMakingBot:
-    def __init__(self, api_key, api_secret, spread, number_of_orders, coin_pair):
-        self.api = CoinsBitApi(api_key, api_secret)
+    def __init__(self, api, spread, number_of_orders, coin_pair):
+        self.api = api
         self.spread = spread
         self.number_of_orders = number_of_orders
         self.coin_pair = coin_pair
 
     def start(self):
-        # Cancel all existing orders
-        existing_orders = self.api.get_all_orders(self.coin_pair)
-        for order in existing_orders:
-            self.api.cancel_order(self.coin_pair, order['id'])
+        ticket = self.api.ticker("GNC_USDT")
+        ticket_result = ticket['result']
+        print(ticket_result)
+        bid = ticket_result["bid"]
+        ask = ticket_result["ask"]
 
-        # Get the current market price
-        ticker = self.api.ticker(self.coin_pair)
-        mid_price = (ticker['bid'] + ticker['ask']) / 2
+        market_result = self.api.markets()["result"]
 
-        # Get the available balance for each coin
-        base_coin, quote_coin = self.coin_pair.split('_')
-        base_balance = self.api.current_balances(base_coin)
-        quote_balance = self.api.current_balances(quote_coin)
+        money = ""
+        stock = ""
 
-        # Calculate the amount for each order
-        base_amount = base_balance / self.number_of_orders
-        quote_amount = quote_balance / (self.number_of_orders * mid_price)
+        for item in market_result:
+            if item['name'] == self.coin_pair:
+                money = item['money']
+                stock = item['stock']
 
-        # Calculate the price for each order and place the orders
-        for i in range(self.number_of_orders):
-            buy_price = mid_price * (1 - self.spread * (i + 1))
-            sell_price = mid_price * (1 + self.spread * (i + 1))
-            self.api.place_order(self.coin_pair, 'buy', quote_amount, buy_price)
-            self.api.place_order(self.coin_pair, 'sell', base_amount, sell_price)
+        money_balance = self.api.current_balances(money)["result"][money]["available"]
+        stock_balance = self.api.current_balances(stock)["result"][stock]["available"]
+        print(f"{money} -> {money_balance}")
+        print(f"{stock} -> {stock_balance}")
+
+        market_maker_bot(
+            bid = bid, 
+            ask = ask, 
+            spread = self.spread, 
+            base_balance = money_balance, 
+            quote_balance = stock_balance,
+            num_orders = self.number_of_orders
+            )
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Market Making Bot')
@@ -44,5 +50,12 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    bot = MarketMakingBot(args.api_key, args.api_secret, args.spread, args.number_of_orders, args.coin_pair)
+    #api_key = "2ce70369fb64d2dd51107a0769e024aa"
+    #apisecret = "1fcaacdbc7ad7e0e291d6f8900530b2e"
+
+    bot = CoinsBitApi(api_key = args.api_key, api_secret = args.api_secret)
+
+    bot = MarketMakingBot(api=bot, spread=args.spread, number_of_orders=args.number_of_orders, coin_pair=args.coin_pair)
     bot.start()
+
+    #python market_making_bot.py --api_key 2ce70369fb64d2dd51107a0769e024aa --api_secret 1fcaacdbc7ad7e0e291d6f8900530b2e --spread 1 --number_of_orders 3 --coin_pair GNC_USDT
