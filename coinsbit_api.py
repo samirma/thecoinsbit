@@ -21,24 +21,29 @@ class CoinsBitApi:
         self.CURRENT_BALANCES_ENDPOINT = "/api/v1/account/balances"
         self.CURRENT_BALANCE_ENDPOINT = "/api/v1/account/balance"
         self.CURRENT_TRANSACTIONS_ENDPOINT = '/api/v1/account/trades'
-        self.ORDERS_IN_MARKET_ENDPOINT = '/api/v1/orders'
+        
         self.ORDERS_HISTORY_ENDPOINT = '/api/v1/account/order_history'
+        self.ORDERS_HISTORY_LIST_ENDPOINT = '/api/v1/account/order_history_list'
+
         self.TRANSACTIONS_HISTORY_ENDPOINT = '/api/v1/public/history'
         self.PLACE_ORDER_ENDPOINT = '/api/v1/order/new'
         self.CANCEL_ORDER_ENDPOINT = '/api/v1/order/cancel'
         self.CANCEL_PRODUCTS_ENDPOINT = '/api/v1/public/products'
 
-    def authorise(self, api_path, request):
+        self.BUY = 'buy'
+        self.SELL = 'sell'
+
+    def authorise(self, api_path, params):
         try:
             complete_url = self.base_url + api_path
 
             # Add 'request' and 'nonce' to the request dictionary
-            request.update({
+            params.update({
                 'request': api_path,
                 'nonce': str(int(time.time()))
             })
 
-            dataJsonStr = json.dumps(request, separators=(',', ':'))
+            dataJsonStr = json.dumps(params, separators=(',', ':'))
             payload = base64.b64encode(dataJsonStr.encode("ascii"))
             signature = hmac.new(self.api_secret.encode('ascii'), payload, hashlib.sha512).hexdigest()
 
@@ -47,7 +52,7 @@ class CoinsBitApi:
                        "X-TXC-APIKEY": self.api_key,
                        "X-TXC-PAYLOAD": payload,
                        "X-TXC-SIGNATURE": signature}
-            return requests.post(complete_url, headers=headers, data=dataJsonStr).text
+            return json.loads(requests.post(complete_url, headers=headers, data=dataJsonStr).text)
 
         except Exception as e:
             print('error', e)
@@ -56,15 +61,15 @@ class CoinsBitApi:
     
     def get(self, api_path, params):
         complete_url = self.base_url + api_path
-        return requests.get(url = complete_url, params=params).text
+        return json.loads(requests.get(url = complete_url, params=params).text)
 
     def current_balances(self, currency: str):
         request={
             "currency": currency,
         }
-        return self.authorise(api_path = self.CURRENT_BALANCE_ENDPOINT, request = request)
+        return self.authorise(api_path = self.CURRENT_BALANCE_ENDPOINT, params = request)
     
-    def place_order(self, currency_pair_code: str, side: str = 'sell', amount: str = '0.1', price: str = '0.1'):
+    def place_order(self, currency_pair_code: str, side: str, amount: str, price: str):
         params = {
             "market": currency_pair_code,
             "side": side,
@@ -72,25 +77,40 @@ class CoinsBitApi:
             "price": price
         } 
 
-        return self.authorise(api_path = self.PLACE_ORDER_ENDPOINT, request = params)
+        return self.authorise(api_path = self.PLACE_ORDER_ENDPOINT, params = params)
     
+    def place_order_buy(self, currency_pair_code: str, amount: str, price: str):
+        return self.place_order(
+                currency_pair_code=currency_pair_code,
+                side=self.BUY,
+                amount=amount,
+                price=price,
+            )
+    
+    def place_order_sell(self, currency_pair_code: str, amount: str, price: str):
+        return self.place_order(
+                currency_pair_code=currency_pair_code,
+                side=self.SELL,
+                amount=amount,
+                price=price,
+            )
 
     def cancel_order(self, currency_pair_code: str, orderId: int):
         params = {
             "market": currency_pair_code,
             "orderId": orderId
         }
-        return self.authorise(api_path = self.PLACE_ORDER_ENDPOINT, request = params)
+        return self.authorise(api_path = self.PLACE_ORDER_ENDPOINT, params = params)
     
 
     def products(self):
-        return self.authorise(api_path = self.CANCEL_PRODUCTS_ENDPOINT, request = {})
+        return self.authorise(api_path = self.CANCEL_PRODUCTS_ENDPOINT, params = {})
     
 
     def order_book(self, currency_pair_code: str, side: str):
         params = {
-            "market": "ETH_BTC",
-            "side": "sell"
+            "market": currency_pair_code,
+            "side": side
         }
         return self.get(api_path = self.CURRENT_ORDER_BOOK_ENDPOINT, params = params)
     
@@ -100,3 +120,25 @@ class CoinsBitApi:
             "market": currency_pair_code
         }
         return self.get(api_path = self.CURRENT_TICKER_ENDPOINT, params = params)
+    
+
+    def orders(self, currency_pair_code: str):
+        params = {
+            "market": currency_pair_code
+        }
+        return self.get(api_path = self.ORDERS_HISTORY_ENDPOINT, params = params)
+    
+    
+    def orders_history(self, currency_pair_code: str):
+        params = {
+            "market": currency_pair_code
+        }
+        return self.authorise(api_path = self.ORDERS_HISTORY_ENDPOINT, params = params)
+    
+    
+    def orders_history_list(self, currency_pair_code: str):
+        params = {
+            "market": currency_pair_code
+        }
+        return self.authorise(api_path = self.ORDERS_HISTORY_LIST_ENDPOINT, params = params)
+    
