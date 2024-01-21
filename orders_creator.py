@@ -7,7 +7,7 @@ class Order:
 
     def __repr__(self):
         #return f"{self.order_type} Order: Price = {self.price}, Amount = {self.amount}"
-        return f"Price = {self.price}"
+        return f"Price = {self.price}, amount = {self.amount}"
 
 def calculate_current_spread(highest_bid, lowest_ask):
     spread = lowest_ask - highest_bid
@@ -19,10 +19,13 @@ def generate_orders(order_type, initial_price, final_price, amount, num_orders):
     #print(f"initial_price: {initial_price} final_price: {final_price} final_list: {final_list}")
     return final_list
 
-def market_maker_bot(bid, ask, spread, base_balance, quote_balance, num_orders):
+def get_new_orders(bid, ask, spread, base_balance, quote_balance, num_orders):
     # Display the current market spread
     current_spread = calculate_current_spread(bid, ask)
     print(f"Current Market Spread: {current_spread}")
+    if (current_spread <= spread):
+        print(f"At this point your spread should be less than {current_spread}")
+        exit(0)
 
     bid_orders = []
     ask_orders = []
@@ -56,7 +59,7 @@ if __name__ == "__main__":
     quote_balance = 10
     num_orders = 3
 
-    bid_orders, ask_orders = market_maker_bot(bid, ask, spread, base_balance, quote_balance, num_orders)
+    bid_orders, ask_orders = get_new_orders(bid, ask, spread, base_balance, quote_balance, num_orders)
     print(f"----")
     print(f"Bid Orders:\n", "\n".join(map(str, bid_orders)))
     print(f"bid {bid}")

@@ -12,9 +12,9 @@ class MarketMakingBot:
     def start(self):
         ticket = self.api.ticker("GNC_USDT")
         ticket_result = ticket['result']
-        print(ticket_result)
-        bid = ticket_result["bid"]
-        ask = ticket_result["ask"]
+        #print(ticket_result)
+        bid = float(ticket_result["bid"])
+        ask = float(ticket_result["ask"])
 
         market_result = self.api.markets()["result"]
 
@@ -26,12 +26,20 @@ class MarketMakingBot:
                 money = item['money']
                 stock = item['stock']
 
-        money_balance = self.api.current_balances(money)["result"][money]["available"]
-        stock_balance = self.api.current_balances(stock)["result"][stock]["available"]
-        print(f"{money} -> {money_balance}")
-        print(f"{stock} -> {stock_balance}")
+        money_balance = float(self.api.current_balances(money)["result"][money]["available"])
+        stock_balance = float(self.api.current_balances(stock)["result"][stock]["available"])
 
-        market_maker_bot(
+        print(f"{money}: {money_balance} {stock} -> {stock_balance}")
+
+        if (money_balance == 0 or stock_balance == 0):
+            balance = "Money balance"
+            if (stock_balance == 0):
+                balance = "Stock balance"
+
+            print(f"{balance} must be higher than 0")
+            exit(0)
+
+        bid_orders, ask_orders = get_new_orders(
             bid = bid, 
             ask = ask, 
             spread = self.spread, 
@@ -39,6 +47,15 @@ class MarketMakingBot:
             quote_balance = stock_balance,
             num_orders = self.number_of_orders
             )
+        
+        print(f"bid_orders")
+        for item in bid_orders:
+            print(f"{item}")
+        
+        print(f"ask_orders")
+        for item in ask_orders:
+            print(f"{item}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Market Making Bot')
