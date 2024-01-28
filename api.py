@@ -15,28 +15,29 @@ def print_non_zero_currencies(json_string):
 api_key = "2ce70369fb64d2dd51107a0769e024aa"
 apisecret = "1fcaacdbc7ad7e0e291d6f8900530b2e"
 
-bot = CoinsBitApi(api_key, apisecret)
+api = CoinsBitApi(api_key, apisecret)
 
-market = "GNC_USDT"
+coin_pair = "GNC_USDT"
 
-market_result = bot.markets()["result"]
+market_result = api.markets()["result"]
+
+#print(market_result)
+
+money = ""
+stock = ""
 
 for item in market_result:
-    if item['name'] == market:
+    if item['name'] == coin_pair:
+        money = item['money']
+        stock = item['stock']
         print(item)
 
-print(bot.current_balances("USDT")["result"]["USDT"]["available"])
-print(bot.current_balances("GNC")["result"]["GNC"]["available"])
+#money_balance = float(api.current_balances(money)["result"][money]["available"])
+#stock_balance = float(api.current_balances(stock)["result"][stock]["available"])
 
-ticket = bot.ticker("GNC_USDT")
-#print(ticket)
-ticket_result = ticket['result']
-print(ticket_result)
-bid = ticket_result["bid"]
-ask = ticket_result["ask"]
+money_balance = api.current_balances(money)
+#stock_balance = api.current_balances(stock)
 
-#ticket = bot.place_order_buy(currency_pair_code = "GNC_USDT",    amount = "10",  price = "0.5")
-#print(ticket)
+stock_balance = ""
 
-print(bot.cancel_order(currency_pair_code="GNC_USDT", orderId=24193667596))
-
+print(f"{money}: {money_balance} {stock} -> {stock_balance}")

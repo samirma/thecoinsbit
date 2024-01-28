@@ -9,6 +9,11 @@ import time
 import json
 import base64
 
+import logging
+
+# Enable debug logging
+logging.basicConfig(level=logging.DEBUG)
+
 class CoinsBitApi:
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
@@ -26,6 +31,7 @@ class CoinsBitApi:
         
         self.ORDERS_HISTORY_ENDPOINT = '/api/v1/account/order_history'
         self.ORDERS_HISTORY_LIST_ENDPOINT = '/api/v1/account/order_history_list'
+        self.ORDERS_ORDER_ENDPOINT = '/api/v1/account/order'
 
         self.TRANSACTIONS_HISTORY_ENDPOINT = '/api/v1/public/history'
         self.PLACE_ORDER_ENDPOINT = '/api/v1/order/new'
@@ -147,4 +153,10 @@ class CoinsBitApi:
             "market": currency_pair_code
         }
         return self.authorise(api_path = self.ORDERS_HISTORY_LIST_ENDPOINT, params = params)
+    
+    def order(self, order):
+        params = {
+            "orderId": order
+        }
+        return self.authorise(api_path = self.ORDERS_ORDER_ENDPOINT, params = params)
     
