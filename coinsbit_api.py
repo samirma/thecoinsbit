@@ -10,9 +10,19 @@ import json
 import base64
 
 import logging
+import http.client as http_client
 
-# Enable debug logging
-logging.basicConfig(level=logging.DEBUG)
+# Enable debugging for HTTP connections
+http_client.HTTPConnection.debuglevel = 1
+
+# Initialize logging
+logging.basicConfig()
+logging.getLogger().setLevel(logging.DEBUG)
+
+# Log all requests made by the requests library
+requests_log = logging.getLogger("requests.packages.urllib3")
+requests_log.setLevel(logging.DEBUG)
+requests_log.propagate = True
 
 class CoinsBitApi:
     def __init__(self, api_key, api_secret):

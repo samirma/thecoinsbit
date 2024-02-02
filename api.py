@@ -15,29 +15,25 @@ def print_non_zero_currencies(json_string):
 api_key = "2ce70369fb64d2dd51107a0769e024aa"
 apisecret = "1fcaacdbc7ad7e0e291d6f8900530b2e"
 
+
 api = CoinsBitApi(api_key, apisecret)
 
-coin_pair = "GNC_USDT"
 
-market_result = api.markets()["result"]
-
-#print(market_result)
-
-money = ""
-stock = ""
-
-for item in market_result:
-    if item['name'] == coin_pair:
-        money = item['money']
-        stock = item['stock']
-        print(item)
-
-#money_balance = float(api.current_balances(money)["result"][money]["available"])
-#stock_balance = float(api.current_balances(stock)["result"][stock]["available"])
-
-money_balance = api.current_balances(money)
+money_balance = api.current_balances("USDT")
 #stock_balance = api.current_balances(stock)
 
 stock_balance = ""
 
-print(f"{money}: {money_balance} {stock} -> {stock_balance}")
+print(f"{money_balance}")
+
+
+api_key = "D8ADDC3A5D843FDBA5265FFE04135E37"
+apisecret = "0A2F9292C0321BD767F61445BDE34056"
+
+api = CoinsBitApi(api_key, apisecret)
+
+print("-----------------")
+
+money_balance = api.current_balances("USDT")
+
+print(f"{money_balance}")
