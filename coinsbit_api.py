@@ -118,7 +118,7 @@ class CoinsBitApi:
             "market": currency_pair_code,
             "orderId": orderId
         }
-        return self.authorise(api_path = self.PLACE_ORDER_ENDPOINT, params = params)
+        return self.authorise(api_path = self.CANCEL_ORDER_ENDPOINT, params = params)
     
 
     def products(self):
