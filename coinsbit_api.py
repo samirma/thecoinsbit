@@ -13,22 +13,22 @@ import logging
 import http.client as http_client
 
 # Enable debugging for HTTP connections
-http_client.HTTPConnection.debuglevel = 1
+#http_client.HTTPConnection.debuglevel = 1
 
 # Initialize logging
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
+#logging.basicConfig()
+#logging.getLogger().setLevel(logging.DEBUG)
 
 # Log all requests made by the requests library
-requests_log = logging.getLogger("requests.packages.urllib3")
-requests_log.setLevel(logging.DEBUG)
-requests_log.propagate = True
+#requests_log = logging.getLogger("requests.packages.urllib3")
+#requests_log.setLevel(logging.DEBUG)
+#requests_log.propagate = True
 
 class CoinsBitApi:
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
         self.api_secret = api_secret
-        self.base_url = "https://coinsbit.io"
+        self.base_url = "https://api.coinsbit.io"
         #Current market endpoints
         self.CURRENT_ORDER_BOOK_ENDPOINT = '/api/v1/public/book'
         self.CURRENT_TICKER_ENDPOINT = '/api/v1/public/ticker'
@@ -58,7 +58,7 @@ class CoinsBitApi:
             # Add 'request' and 'nonce' to the request dictionary
             params.update({
                 'request': api_path,
-                'nonce': str(int(time.time()))
+                'nonce': round(time.time() * 1000)
             })
 
             dataJsonStr = json.dumps(params, separators=(',', ':'))
