@@ -139,29 +139,17 @@ class CoinsBitApi:
         }
         return self.get(api_path = self.CURRENT_TICKER_ENDPOINT, params = params)
     
-
-    def orders(self, currency_pair_code: str):
-        params = {
-            "market": currency_pair_code
-        }
-        return self.get(api_path = self.ORDERS_HISTORY_ENDPOINT, params = params)
-    
-
     def markets(self):
         return self.get(api_path = self.MARKETS_ENDPOINT, params = {})
     
     
-    def orders_history(self, currency_pair_code: str):
-        params = {
-            "market": currency_pair_code
-        }
+    def orders_history(self):
+        params = { }
         return self.authorise(api_path = self.ORDERS_HISTORY_ENDPOINT, params = params)
     
     
-    def orders_history_list(self, currency_pair_code: str):
-        params = {
-            "market": currency_pair_code
-        }
+    def orders_history_list(self):
+        params = { }
         return self.authorise(api_path = self.ORDERS_HISTORY_LIST_ENDPOINT, params = params)
     
     def order(self, order):

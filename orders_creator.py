@@ -1,3 +1,4 @@
+import argparse
 
 class Order:
     def __init__(self, order_type, price, amount):
@@ -6,7 +7,6 @@ class Order:
         self.amount = amount
 
     def __repr__(self):
-        #return f"{self.order_type} Order: Price = {self.price}, Amount = {self.amount}"
         return f"Price = {self.price}, amount = {self.amount}"
 
 def calculate_current_spread(highest_bid, lowest_ask):
@@ -16,7 +16,6 @@ def calculate_current_spread(highest_bid, lowest_ask):
 def generate_orders(order_type, initial_price, final_price, amount, num_orders):
     price_step = (final_price - initial_price) / (num_orders+1)
     final_list = [Order(order_type, initial_price + (i+1) * price_step, amount) for i in range(num_orders)]
-    #print(f"initial_price: {initial_price} final_price: {final_price} final_list: {final_list}")
     return final_list
 
 def get_new_orders(bid, ask, spread, base_balance, quote_balance, num_orders):
@@ -51,18 +50,21 @@ def get_new_orders(bid, ask, spread, base_balance, quote_balance, num_orders):
     return bid_orders, ask_orders
 
 if __name__ == "__main__":
-    # Example usage:
-    bid = 100
-    ask = 110
-    spread = 2
-    base_balance = 10
-    quote_balance = 10
-    num_orders = 3
+  # Parse command line arguments
+  parser = argparse.ArgumentParser(description='Calculate and generate orders based on market data.')
+  parser.add_argument('--bid', type=float, help='Current bid price')
+  parser.add_argument('--ask', type=float, help='Current ask price')
+  parser.add_argument('--spread', type=float, help='Desired spread')
+  parser.add_argument('--base_balance', type=float, help='Available base currency balance')
+  parser.add_argument('--quote_balance', type=float, help='Available quote currency balance')
+  parser.add_argument('--num_orders', type=int, help='Number of orders to generate on each side (bid/ask)')
 
-    bid_orders, ask_orders = get_new_orders(bid, ask, spread, base_balance, quote_balance, num_orders)
-    print(f"----")
-    print(f"Bid Orders:\n", "\n".join(map(str, bid_orders)))
-    print(f"bid {bid}")
-    print(f"Ask Orders:\n", "\n".join(map(str, ask_orders)))
-    print(f"ask {ask}")
+  args = parser.parse_args()
 
+  # Extract arguments and call functions
+  bid_orders, ask_orders = get_new_orders(args.bid, args.ask, args.spread, args.base_balance, args.quote_balance, args.num_orders)
+  print(f"----")
+  print(f"Bid Orders:\n", "\n".join(map(str, bid_orders)))
+  print(f"bid {args.bid}")
+  print(f"Ask Orders:\n", "\n".join(map(str, ask_orders)))
+  print(f"ask {args.ask}")

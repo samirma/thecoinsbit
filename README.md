@@ -18,4 +18,6 @@ pip install -r requirements.txt
 ```
 
 Documentation
-For more detailed information on the API’s functionality and methods, please refer to the documentation. For more information about the Coinsbit exchange, you can visit their official documentation https://coinsbitwsapi.notion.site/coinsbitwsapi/API-COINSBIT-WS-API-COINSBIT-cf1044cff30646d49a0bab0e28f27a87
+For more detailed information on the API’s functionality and methods, please refer to the documentation. For more information about the Coinsbit exchange, you can visit their official documentation 
+
+https://coinsbitwsapi.notion.site/coinsbitwsapi/API-COINSBIT-WS-API-COINSBIT-cf1044cff30646d49a0bab0e28f27a87
