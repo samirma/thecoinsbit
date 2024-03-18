@@ -24,6 +24,9 @@ import http.client as http_client
 #requests_log.setLevel(logging.DEBUG)
 #requests_log.propagate = True
 
+RESULT = "result"
+SUCCESS = "success"
+
 class CoinsBitApi:
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
@@ -79,13 +82,13 @@ class CoinsBitApi:
     
     def get(self, api_path, params):
         complete_url = self.base_url + api_path
-        return json.loads(requests.get(url = complete_url, params=params).text)
+        return json.loads(requests.get(url = complete_url, params=params).text)[RESULT]
 
     def current_balances(self, currency: str):
         request={
             "currency": currency,
         }
-        return self.authorise(api_path = self.CURRENT_BALANCE_ENDPOINT, params = request)
+        return self.authorise(api_path = self.CURRENT_BALANCE_ENDPOINT, params = request)[RESULT]
     
     def place_order(self, currency_pair_code: str, side: str, amount: str, price: str):
         params = {

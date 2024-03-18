@@ -22,13 +22,13 @@ class MarketMakingBot:
                 #self.api.cancel_order(self.coin_pair, order["id"])
 
     def manage_orders(self):
-        ticket = self.api.ticker(self.coin_pair)
-        ticket_result = ticket['result']
+        ticket_result = self.api.ticker(self.coin_pair)
+        
         #print(ticket_result)
         bid = float(ticket_result["bid"])
         ask = float(ticket_result["ask"])
 
-        market_result = self.api.markets()["result"]
+        market_result = self.api.markets()
 
         money = ""
         stock = ""
@@ -38,8 +38,8 @@ class MarketMakingBot:
                 money = item['money']
                 stock = item['stock']
 
-        money_balance = float(self.api.current_balances(money)["result"][money]["available"])
-        stock_balance = float(self.api.current_balances(stock)["result"][stock]["available"])
+        money_balance = float(self.api.current_balances(money)["available"])
+        stock_balance = float(self.api.current_balances(stock)["available"])
 
         print(f"{money}: {money_balance} {stock} -> {stock_balance}")
 
@@ -65,20 +65,18 @@ class MarketMakingBot:
         print(f"bid_orders")
         for item in bid_orders:
             print(f"{item}")
+            #self.api.place_order_buy(currency_pair_code=self.coin_pair, amount=item.amount, price=item.price)
         
         print(f"ask_orders")
         for item in ask_orders:
             print(f"{item}")
+            #self.api.place_order_sell(currency_pair_code=self.coin_pair, amount=item.amount, price=item.price)
 
     
     def start(self):
         while True:
-            try:
-                self.manage_orders()
-                time.sleep(self.delay / 1000)  # Delay in seconds
-            except Exception as e:
-                print(f"An error occurred: {e}")
-                exit(0)
+            self.manage_orders()
+            time.sleep(self.delay / 1000)  # Delay in seconds
 
 
 if __name__ == "__main__":
