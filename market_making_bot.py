@@ -3,6 +3,7 @@ from coinsbit_api import CoinsBitApi
 from orders_creator import *
 import env 
 import time
+from order import *
 
 class MarketMakingBot:
     def __init__(self, api, spread, number_of_orders, coin_pair, delay):
@@ -15,11 +16,12 @@ class MarketMakingBot:
     def cancel_orders(self):
         existing_orders = self.api.orders_history_list()
 
-        # Cancel existing orders if necessary
+        # Cancel only non-executed orders
         for order in existing_orders:
             if order["market"] == self.coin_pair:
-                print(order)
-                #self.api.cancel_order(self.coin_pair, order["id"])
+                order_instance = get_order(order)
+                #cancel_order = self.api.cancel_order(self.coin_pair, order["id"])
+                #print(f"Canceled order: {order_instance}")
 
     def manage_orders(self):
         ticket_result = self.api.ticker(self.coin_pair)
@@ -43,6 +45,8 @@ class MarketMakingBot:
 
         print(f"{money}: {money_balance} {stock} -> {stock_balance}")
 
+        self.cancel_orders()
+
         if (money_balance == 0 or stock_balance == 0):
             balance = "Money balance"
             if (stock_balance == 0):
@@ -50,8 +54,6 @@ class MarketMakingBot:
 
             print(f"{balance} must be higher than 0")
             exit(0)
-
-        self.cancel_orders()
 
         bid_orders, ask_orders = get_new_orders(
             bid = bid, 

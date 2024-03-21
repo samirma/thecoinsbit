@@ -23,13 +23,27 @@ api = CoinsBitApi(api_key, apisecret)
 money_balance = api.current_balances("USDT")
 stock_balance = ""
 
-#buy_order = api.place_order_buy(currency_pair_code=pair, amount="0.5", price="0.5")
+buy_order = api.place_order_buy(currency_pair_code=pair, amount="0.5", price="0.5")
 
-#print(buy_order)
+orderId = buy_order["orderId"]
+print(api.order(orderId))
 
-#print(f"{money_balance}")
-#print(api.orders_history())
 
-print(api.order(24193667596))
-print(api.order(8946240739))
-print(api.order(25602334278))
+print("canceled")
+print("canceled")
+print("canceled")
+print("canceled")
+print("canceled")
+print("canceled")
+canceled = api.cancel_order(pair, orderId)
+print("canceled")
+print("canceled")
+print("canceled")
+print("canceled")
+print("canceled")
+print("canceled")
+
+
+print(canceled)
+
+print(api.order(orderId))

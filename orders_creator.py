@@ -1,13 +1,6 @@
 import argparse
+from order import *
 
-class Order:
-    def __init__(self, order_type, price, amount):
-        self.order_type = order_type
-        self.price = price
-        self.amount = amount
-
-    def __repr__(self):
-        return f"Price = {self.price}, amount = {self.amount}"
 
 def calculate_current_spread(highest_bid, lowest_ask):
     spread = lowest_ask - highest_bid

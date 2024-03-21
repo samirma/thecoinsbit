@@ -13,16 +13,15 @@ import logging
 import http.client as http_client
 
 # Enable debugging for HTTP connections
-#http_client.HTTPConnection.debuglevel = 1
+if(True):
+    http_client.HTTPConnection.debuglevel = 1
 
-# Initialize logging
-#logging.basicConfig()
-#logging.getLogger().setLevel(logging.DEBUG)
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.DEBUG)
 
-# Log all requests made by the requests library
-#requests_log = logging.getLogger("requests.packages.urllib3")
-#requests_log.setLevel(logging.DEBUG)
-#requests_log.propagate = True
+    requests_log = logging.getLogger("requests.packages.urllib3")
+    requests_log.setLevel(logging.DEBUG)
+    requests_log.propagate = True
 
 RESULT = "result"
 SUCCESS = "success"
@@ -73,7 +72,7 @@ class CoinsBitApi:
                        "X-TXC-APIKEY": self.api_key,
                        "X-TXC-PAYLOAD": payload,
                        "X-TXC-SIGNATURE": signature}
-            return json.loads(requests.post(complete_url, headers=headers, data=dataJsonStr).text)
+            return json.loads(requests.post(complete_url, headers=headers, data=dataJsonStr).text)[RESULT]
 
         except Exception as e:
             print('error', e)
@@ -88,7 +87,7 @@ class CoinsBitApi:
         request={
             "currency": currency,
         }
-        return self.authorise(api_path = self.CURRENT_BALANCE_ENDPOINT, params = request)[RESULT]
+        return self.authorise(api_path = self.CURRENT_BALANCE_ENDPOINT, params = request)
     
     def place_order(self, currency_pair_code: str, side: str, amount: str, price: str):
         params = {
