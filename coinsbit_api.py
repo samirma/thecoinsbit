@@ -12,17 +12,6 @@ import base64
 import logging
 import http.client as http_client
 
-# Enable debugging for HTTP connections
-if(True):
-    http_client.HTTPConnection.debuglevel = 1
-
-    logging.basicConfig()
-    logging.getLogger().setLevel(logging.DEBUG)
-
-    requests_log = logging.getLogger("requests.packages.urllib3")
-    requests_log.setLevel(logging.DEBUG)
-    requests_log.propagate = True
-
 RESULT = "result"
 SUCCESS = "success"
 
@@ -47,11 +36,16 @@ class CoinsBitApi:
 
         self.TRANSACTIONS_HISTORY_ENDPOINT = '/api/v1/public/history'
         self.PLACE_ORDER_ENDPOINT = '/api/v1/order/new'
+        self.PLACE_ORDERS_ENDPOINT = '/api/v1/orders'
         self.CANCEL_ORDER_ENDPOINT = '/api/v1/order/cancel'
         self.CANCEL_PRODUCTS_ENDPOINT = '/api/v1/public/products'
 
         self.BUY = 'buy'
         self.SELL = 'sell'
+
+        self.log = False
+
+        self.show_log(self.log)
 
     def authorise(self, api_path, params):
         try:
@@ -145,13 +139,19 @@ class CoinsBitApi:
         return self.get(api_path = self.MARKETS_ENDPOINT, params = {})
     
     
-    def orders_history(self):
-        params = { }
+    def orders_history(self, offset = 0, limit = 100):
+        params = {
+            	"offset": offset,
+	            "limit": limit
+         }
         return self.authorise(api_path = self.ORDERS_HISTORY_ENDPOINT, params = params)
     
     
-    def orders_history_list(self):
-        params = { }
+    def orders_history_list(self, offset = 0, limit = 100):
+        params = {
+            	"offset": offset,
+	            "limit": limit
+         }
         return self.authorise(api_path = self.ORDERS_HISTORY_LIST_ENDPOINT, params = params)
     
     def order(self, order):
@@ -160,3 +160,33 @@ class CoinsBitApi:
         }
         return self.authorise(api_path = self.ORDERS_ORDER_ENDPOINT, params = params)
     
+    def orders(self, pair_code: str, offset = 0, limit = 100):
+        params = {
+            "market": pair_code,
+            "offset": offset,
+            "limit": limit
+        }
+        return self.authorise(api_path = self.PLACE_ORDERS_ENDPOINT, params = params)
+    
+    def paginate_orders(self, pair_code: str, continue_paging_lambda, offset=0, limit=100):
+        while True:
+            orders_result = self.orders(pair_code, offset=offset, limit=limit)
+            offset += limit
+            orders = orders_result['result']
+            limit_result = orders_result['limit']
+            offset_result = orders_result['offset']
+            total_result = orders_result['total']
+            if not continue_paging_lambda(orders, limit_result, offset_result, total_result) or len(orders) < limit:
+                break
+    
+    def show_log(self, log):
+        # Enable debugging for HTTP connections
+        if(log):
+            http_client.HTTPConnection.debuglevel = 1
+
+            logging.basicConfig()
+            logging.getLogger().setLevel(logging.DEBUG)
+
+            requests_log = logging.getLogger("requests.packages.urllib3")
+            requests_log.setLevel(logging.DEBUG)
+            requests_log.propagate = True

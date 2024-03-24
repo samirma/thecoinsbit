@@ -14,13 +14,16 @@ def generate_orders(order_type, initial_price, final_price, amount, num_orders):
 def get_new_orders(bid, ask, spread, base_balance, quote_balance, num_orders):
     # Display the current market spread
     current_spread = calculate_current_spread(bid, ask)
-    print(f"Current Market Spread: {current_spread}")
-    if (current_spread <= spread):
-        print(f"At this point your spread should be less than {current_spread}")
-        exit(0)
 
     bid_orders = []
     ask_orders = []
+
+    #print(f"Current Market Spread: {current_spread}")
+    if (current_spread <= spread):
+        print(f"At this point your spread should be less than {current_spread}")
+        return bid_orders, ask_orders
+
+
     bid_amount_per_order = base_balance / num_orders
     ask_amount_per_order = quote_balance / num_orders
 
@@ -36,9 +39,9 @@ def get_new_orders(bid, ask, spread, base_balance, quote_balance, num_orders):
         ask_orders = ask_orders + (generate_orders('ask', first_ask_price, ask, ask_amount_per_order, (num_orders-1)))
 
     # Display the final market spread
-    final_spread = calculate_current_spread(bid_orders[0].price, ask_orders[0].price)
+    #final_spread = calculate_current_spread(bid_orders[0].price, ask_orders[0].price)
 
-    print(f"Final Market Spread: {final_spread}")
+    #print(f"Final Market Spread: {final_spread}")
 
     return bid_orders, ask_orders
 
