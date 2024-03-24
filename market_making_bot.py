@@ -116,6 +116,7 @@ class MarketMakingBot:
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             print(f"Loop started at {current_time}")
             self.manage_orders()
+            print(f"Loop stopped at {current_time}")
             time.sleep(self.delay)  # Delay in seconds
             #return
 
