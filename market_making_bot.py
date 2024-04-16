@@ -1,6 +1,6 @@
 import argparse
 from coinsbit_api import CoinsBitApi
-from orders_creator import *
+from new_orders_creator import *
 import env 
 import time
 from order import *
@@ -65,6 +65,7 @@ class MarketMakingBot:
         #print(ticket_result)
         bid = float(ticket_result["bid"])
         ask = float(ticket_result["ask"])
+        last = float(ticket_result["last"])
 
         self.check_spread()
 
@@ -93,7 +94,8 @@ class MarketMakingBot:
 
         bid_orders, ask_orders = get_new_orders(
             bid = bid, 
-            ask = ask, 
+            ask = ask,
+            last = last
             spread = self.spread, 
             base_balance = money_balance, 
             quote_balance = stock_balance,
